@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from pyclub.dbconnect import create_user, get_user
+from pyclub.dbconnect import create_user, get_user, confirm_email
 from werkzeug.security import generate_password_hash, check_password_hash
+from emailconfirmation import confirm_token, send_email_authentication
+from main import app
 
 app = Flask(__name__)
 app.secret_key = 'cokolwiek'
@@ -29,6 +31,8 @@ def register_page():
             create_user(new_first_name, new_last_name, new_email, new_password)
         elif '@' not in new_email:
             error_message = "Email musi zawierać znak @"
+            send_email_authentication(new_email)
+
         elif new_password != new_password_confirm:
             error_message = "Hasła muszą się zgadzać"
         else:
@@ -92,5 +96,12 @@ def profile_page():
 
 
 
+@app.route("/activate/<confirmation_token>/")
+def activate_account(confirmation_token):
+    mail = confirm_token(confirmation_token)
+    confirm_email(mail)
+    return redirect(url_for('index_page'))
+
+
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1")
+    app.run(host="127.0.0.1", port="5000")

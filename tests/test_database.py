@@ -1,10 +1,8 @@
-from pyclub.dbconnect import create_user, create_organization, create_club, create_event,  get_user, get_club, get_organization, get_event
+import pytest
+from pyclub.dbconnect import *
 
-#def test_create_db():
-#	create_db()
-
-#def test_connection():
-#	connection()
+def test_create_db():
+	create_db()
 
 def test_create_user():
 	create_user('Firstname','Test','email@email.com','haslomaslo')
